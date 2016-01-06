@@ -1,3 +1,5 @@
+import com.sun.xml.internal.bind.v2.TODO;
+
 import java.util.*;
 
 /**
@@ -5,15 +7,15 @@ import java.util.*;
  */
 public class MyLinkedList implements List<Integer> {
     private int size = 0;
-    private static Node top;
+    private static Node head;
 
     public MyLinkedList() {
+        head = null;
     }
 
     public MyLinkedList(Integer element) {
-        final Node f = top;
-        final Node newNode = new Node<>(element, f);
-        top = newNode;
+        Node node = new Node(element);
+        head = node;
         size++;
     }
 
@@ -31,8 +33,8 @@ public class MyLinkedList implements List<Integer> {
 
     @Override
     public boolean contains(Object o) {
-        for (Node node = top; node != null; node = node.next) {
-            if (node.item == null) {
+        for (Node node = head; node != null; node = node.next) {
+            if (node.item == o) {
                 return true;
             }
         }
@@ -48,7 +50,7 @@ public class MyLinkedList implements List<Integer> {
     public Integer[] toArray() {
         Integer[] result = new Integer[size];
         int i = 0;
-        for (Node node = top; node != null; node = node.next)
+        for (Node node = head; node != null; node = node.next)
             result[i++] = (Integer) node.item;
         return result;
     }
@@ -60,39 +62,62 @@ public class MyLinkedList implements List<Integer> {
 
     @Override
     public boolean add(Integer element) {
-        final Node f = top;
-        final Node newNode = new Node<>(element, f);
-        top = newNode;
+        Node node = new Node(element);
+        if(head == null){
+            head = node;
+        }else {
+            Node current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = node;
+        }
         size++;
+
         return true;
     }
 
-    //do later
+    //TODO late
     @Override
     public boolean remove(Object o) {
-        if (top == null)
+        if (head == null)
             throw new NoSuchElementException();
 
-        for (Node node = top; node != null; node = node.next) {
+        int index = indexOf(o);
+
+        if (index == 0) {
+        } else {
+            Node current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+        }
+
+        for (Node node = head; node != null; node = node.next) {
             if (o.equals(node.item)) {
                 return true;
             }
         }
-    return false;
+        return false;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
+        for (Object integer : c) {
+            if (!contains(integer)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Integer> c) {
         boolean modified = false;
         for (Object element : c)
             if (add((Integer) element))
                 modified = true;
         return modified;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends Integer> c) {
-        return false;
     }
 
     @Override
@@ -112,19 +137,25 @@ public class MyLinkedList implements List<Integer> {
 
     @Override
     public void clear() {
-        for (Node node = top; node != null; ) {
+        for (Node node = head; node != null; ) {
             Node next = node.next;
             node.item = null;
             node.next = null;
             node = next;
         }
-        top = null;
+        head = null;
         size = 0;
     }
 
     @Override
     public Integer get(int index) {
-        return null;
+        if (index < 0 || index + 1 > size)
+            return null;
+        Node current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        return (Integer) current.item;
     }
 
     @Override
@@ -132,9 +163,17 @@ public class MyLinkedList implements List<Integer> {
         return null;
     }
 
+    //TODO late
     @Override
     public void add(int index, Integer element) {
-
+        Node current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        System.out.println("___ " + current.item);
+        Node temp = current;
+        current.item = element;
+        current.next = temp;
     }
 
     @Override
@@ -144,17 +183,28 @@ public class MyLinkedList implements List<Integer> {
 
     @Override
     public int indexOf(Object o) {
+        int index = 0;
+        if (head == null)
+            throw new NoSuchElementException();
+
+        for (Node node = head; node != null; node = node.next, index++) {
+            if (o.equals(node.item)) {
+                return index;
+            }
+        }
         return -1;
     }
 
+    //do later
     @Override
     public int lastIndexOf(Object o) {
-        int index = size;
-            for (Node node = top; node != null; index--) {
-                if (o.equals(node.item))
-                    return index;
-            }
-        return -1;
+        int index = 0;
+        int lastIndex = -1;
+        for (Node node = head; node != null; node = node.next, index++) {
+            if (o.equals(node.item))
+                lastIndex = index;
+        }
+        return lastIndex;
     }
 
 
@@ -177,9 +227,9 @@ public class MyLinkedList implements List<Integer> {
         Integer item;
         Node<Integer> next;
 
-        Node(Integer element, Node<Integer> next) {
+        Node(Integer element) {
             this.item = element;
-            this.next = next;
+            this.next = null;
         }
     }
 }
