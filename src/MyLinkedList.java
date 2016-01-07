@@ -1,5 +1,3 @@
-import com.sun.xml.internal.bind.v2.TODO;
-
 import java.util.*;
 
 /**
@@ -68,9 +66,9 @@ public class MyLinkedList implements List<Integer> {
     @Override
     public boolean add(Integer element) {
         Node node = new Node(element);
-        if(head == null){
+        if (head == null) {
             head = node;
-        }else {
+        } else {
             Node current = head;
             while (current.next != null) {
                 current = current.next;
@@ -154,11 +152,11 @@ public class MyLinkedList implements List<Integer> {
 
     @Override
     public Integer set(int index, Integer element) {
-        if (index > size -1 || index < 0) {
+        if (index > size - 1 || index < 0) {
             return null;
         }
         Node current = head;
-        while (index-- != 0){
+        while (index-- != 0) {
             current = current.next;
         }
         System.out.println("item: " + current.item);
@@ -168,12 +166,11 @@ public class MyLinkedList implements List<Integer> {
     }
 
 
-
     //TODO late
     @Override
     public void add(int index, Integer element) {
         Node current = head;
-        while (index-- != 0){
+        while (index-- != 0) {
             current = current.next;
         }
         System.out.println("item: " + current.item);
@@ -194,9 +191,8 @@ public class MyLinkedList implements List<Integer> {
     @Override
     public Integer remove(int index) {
         Integer result = null;
-        if (index + 1 > size || index < 0){}
-        else if (index == 0)
-        {
+        if (index + 1 > size || index < 0) {
+        } else if (index == 0) {
             result = (Integer) head.item;
             size--;
             head = head.next;
