@@ -57,7 +57,12 @@ public class MyLinkedList implements List<Integer> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        return null;
+        if (a.length < size)
+            return null;
+        int i = 0;
+        for (Node node = head; node != null; node = node.next)
+            a[i++] = (T) node.item;
+        return a;
     }
 
     @Override
@@ -83,22 +88,8 @@ public class MyLinkedList implements List<Integer> {
         if (head == null)
             throw new NoSuchElementException();
 
-        int index = indexOf(o);
-
-        if (index == 0) {
-        } else {
-            Node current = head;
-            for (int i = 0; i < index; i++) {
-                current = current.next;
-            }
-        }
-
-        for (Node node = head; node != null; node = node.next) {
-            if (o.equals(node.item)) {
-                return true;
-            }
-        }
-        return false;
+        remove(indexOf(o));
+        return true;
     }
 
     @Override
@@ -127,7 +118,10 @@ public class MyLinkedList implements List<Integer> {
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        return false;
+        for (Object object : c) {
+            remove(object);
+        }
+        return true;
     }
 
     @Override
@@ -160,25 +154,61 @@ public class MyLinkedList implements List<Integer> {
 
     @Override
     public Integer set(int index, Integer element) {
-        return null;
+        if (index > size -1 || index < 0) {
+            return null;
+        }
+        Node current = head;
+        while (index-- != 0){
+            current = current.next;
+        }
+        System.out.println("item: " + current.item);
+
+        current.item = element;
+        return element;
     }
+
+
 
     //TODO late
     @Override
     public void add(int index, Integer element) {
         Node current = head;
-        for (int i = 0; i < index; i++) {
+        while (index-- != 0){
             current = current.next;
         }
-        System.out.println("___ " + current.item);
-        Node temp = current;
+        System.out.println("item: " + current.item);
+
         current.item = element;
-        current.next = temp;
+        //Node temp = current;
+        //current.item = element;
+        //
+        // current.next = temp;
+    }
+
+    private Integer pop(Node node) {
+        Node temp = node.next;
+        node.next = temp.next;
+        return (Integer) temp.item;
     }
 
     @Override
     public Integer remove(int index) {
-        return null;
+        Integer result = null;
+        if (index + 1 > size || index < 0){}
+        else if (index == 0)
+        {
+            result = (Integer) head.item;
+            size--;
+            head = head.next;
+        } else {
+            size--;
+            Node node = head;
+            while (--index != 0) {
+                node = node.next;
+            }
+            result = pop(node);
+        }
+        return result;
     }
 
     @Override
@@ -195,7 +225,6 @@ public class MyLinkedList implements List<Integer> {
         return -1;
     }
 
-    //do later
     @Override
     public int lastIndexOf(Object o) {
         int index = 0;
@@ -206,7 +235,6 @@ public class MyLinkedList implements List<Integer> {
         }
         return lastIndex;
     }
-
 
     @Override
     public ListIterator<Integer> listIterator() {
@@ -223,7 +251,8 @@ public class MyLinkedList implements List<Integer> {
         return null;
     }
 
-    private static class Node<Integer> {
+
+    private static class Node<Integer> implements Cloneable {
         Integer item;
         Node<Integer> next;
 
